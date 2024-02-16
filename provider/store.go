@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"os"
 	"sync"
+
+	"golang.org/x/exp/slog"
 )
 
 const (
@@ -24,15 +26,27 @@ type (
 )
 
 func NewItemStore() *itemStore {
-	return &itemStore{
+	store := &itemStore{
 		data: make(map[string]item),
 	}
+	err := readFromFile(itemStorePath, &store.data)
+	if err != nil {
+		slog.Error("read store", "error", err.Error())
+	}
+	return store
 }
 
 func NewStatStore() *statStore {
-	return &statStore{
+	store := &statStore{
 		data: make(map[string]itemEvents),
 	}
+	err := readFromFile(statStorePath, &store.data)
+	if err != nil {
+		slog.Error("read store", "error", err.Error())
+	}
+
+
+	return store
 }
 
 func (ss *statStore) IncrementValue(
@@ -74,7 +88,7 @@ func (ss *statStore) IncrementValue(
 }
 
 func readFromFile(filePath string, state interface{}) error {
-	file, err := os.OpenFile(filePath, os.O_CREATE, 0666)
+	file, err := os.OpenFile(filePath, os.O_CREATE|os.O_RDONLY, os.ModePerm)
 	if err != nil {
 		return err
 	}
@@ -85,7 +99,7 @@ func readFromFile(filePath string, state interface{}) error {
 }
 
 func writToFile(filePath string, state interface{}) error {
-	file, err := os.OpenFile(filePath, os.O_CREATE, 0666)
+	file, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY, os.ModePerm)
 	if err != nil {
 		return err
 	}

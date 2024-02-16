@@ -83,5 +83,17 @@ func (p *Provider) Start(
 		// stop all connections to db, etc
 	}()
 
+	go func() {
+		for range time.Tick(5 * time.Second) {
+			err := writToFile(itemStorePath, p.items.data)
+			if err != nil{
+				slog.Error("items snapshot", "error", err.Error())
+			}
+			err = writToFile(statStorePath, p.stats.data)
+			if err != nil{
+				slog.Error("stats snapshot", "error", err.Error())
+			}
+		}
+	}()
 	return p.httpServer.Serve(ln)
 }
