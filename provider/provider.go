@@ -41,11 +41,10 @@ func (p *Provider) Start(
 		listenNetwork,
 		listenAddr,
 	)
-	defer ln.Close()
-
 	if err != nil {
 		return err
 	}
+	defer ln.Close()
 
 	p.baseURL = baseURL
 
@@ -60,14 +59,14 @@ func (p *Provider) Start(
 	r.GET("/vast/:event/:id", p.VASTEventHandler) // VAST Events tracking
 
 	// items crud
-	r.GET("/data/items", nil)
-	r.GET("/data/item/:id", nil)
-	r.PUT("/data/item", nil)
-	r.DELETE("/data/item/:id", nil)
+	r.GET("/data/items", p.GetItemsHandler)
+	r.GET("/data/item/:id", p.GetItemHandler)
+	r.PUT("/data/item", p.UpsertItemHandler)
+	r.DELETE("/data/item/:id", p.DelItemHandler)
 
 	// stats
-	r.GET("/stats/all", nil)
-	r.GET("/stats/:id", nil)
+	r.GET("/stats", p.StatsHandler)
+	r.GET("/stats/:id", p.ItemStatsHandler)
 
 	p.httpServer.Handler = r.Handler
 

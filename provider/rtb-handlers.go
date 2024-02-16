@@ -37,6 +37,7 @@ func (p *Provider) BidRequestHandler(ctx *fasthttp.RequestCtx) {
 			{
 				Bid: []openrtb2.Bid{
 					{
+						ID: uuid.NewString(),
 						ImpID: bidRequest.Imp[0].ID,
 						AdID:  item.ID,
 						Price: item.Bid,

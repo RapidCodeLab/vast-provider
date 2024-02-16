@@ -16,7 +16,7 @@ const timeFormat = "2006-01-02 15:04:05"
 
 type (
 	Config struct {
-		ServerListeNetwork string `env:"SERVER_LISTEN_NETWORK,required"`
+		ServerListenNetwork string `env:"SERVER_LISTEN_NETWORK,required"`
 		ServerListenAddr   string `env:"SERVER_LISTEN_ADDR,required"`
 		BaseURL            string `env:"BASE_URL,required"`
 	}
@@ -54,8 +54,8 @@ func main() {
 
 	err = p.Start(
 		ctx,
-		config.ServerListeNetwork,
-		config.ServerListeNetwork,
+		config.ServerListenNetwork,
+		config.ServerListenAddr,
 		config.BaseURL,
 	)
 	if err != nil {

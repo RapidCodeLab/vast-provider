@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	itemStorePath = ""
-	statStorePath = ""
+	itemStorePath = "items.json"
+	statStorePath = "stats.json"
 )
 
 type (
@@ -43,21 +43,30 @@ func (ss *statStore) IncrementValue(
 	defer ss.mu.Unlock()
 
 	if ss.data[itemID] == (itemEvents{}) {
-		ss.data[itemID] = itemEvents{}
+		ss.data[itemID] = itemEvents{
+			ID: itemID,
+		}
 	}
 
 	e := ss.data[itemID]
 
 	switch valueName {
 	case EventTypeNotify:
-		e.Notify = 0
+		e.Notify++
 	case EventTypeImpression:
+		e.Impression++
 	case EventTypeClick:
+		e.Click++
 	case EventTypeStart:
+		e.Start++
 	case EventTypeFirstQuartile:
+		e.FirstQuartile++
 	case EventTypeMidpoint:
+		e.Midpoint++
 	case EventTypeThirdQuartile:
+		e.ThirdQuartile++
 	case EventTypeComplete:
+		e.Complete++
 	default:
 	}
 
@@ -65,7 +74,7 @@ func (ss *statStore) IncrementValue(
 }
 
 func readFromFile(filePath string, state interface{}) error {
-	file, err := os.Open(filePath)
+	file, err := os.OpenFile(filePath, os.O_CREATE, 0666)
 	if err != nil {
 		return err
 	}
@@ -76,7 +85,7 @@ func readFromFile(filePath string, state interface{}) error {
 }
 
 func writToFile(filePath string, state interface{}) error {
-	file, err := os.Create(filePath)
+	file, err := os.OpenFile(filePath, os.O_CREATE, 0666)
 	if err != nil {
 		return err
 	}
