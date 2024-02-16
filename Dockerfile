@@ -4,7 +4,7 @@ RUN apk add --no-cache ca-certificates
 WORKDIR /go/src/github.com/RapidCodeLab/vast-provider
 ADD . .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-    go build -ldflags '-extldflags "-static"' -o app ./main
+    go build -ldflags '-extldflags "-static"' -o app .
 
 FROM scratch
 COPY --from=build /etc/ssl/certs/ca-certificates.crt \
