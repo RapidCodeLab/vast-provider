@@ -3,14 +3,12 @@ package provider
 const vastTemplate = `<VAST version="3.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
     <Ad id="{{ad_id}}">
         <InLine>
-            <AdSystem version="4.0">iabtechlab</AdSystem>
-            <AdTitle>iabtechlab video ad</AdTitle>
-            <Error>http://example.com/error</Error>
+            <AdTitle>{{title}}</AdTitle>
             <Impression id="Impression-ID">{{base_url}}/vast/impression/{{ad_id}}</Impression>
             <Creatives>
                 <Creative id="{{ad_id}}" sequence="1">
                     <Linear>
-                        <Duration>00:00:16</Duration>
+                        <Duration>{{video_duration}}</Duration>
 
                         <TrackingEvents>
                             <Tracking event="start">{{base_url}}/vast/start/{{ad_id}}</Tracking>
@@ -34,7 +32,6 @@ const vastTemplate = `<VAST version="3.0" xmlns:xs="http://www.w3.org/2001/XMLSc
                                 <![CDATA[{{video_url}}]]>
                             </MediaFile>
                         </MediaFiles>
-
                     </Linear>
                 </Creative>
             </Creatives>

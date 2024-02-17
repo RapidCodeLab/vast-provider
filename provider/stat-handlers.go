@@ -13,6 +13,7 @@ func (p *Provider) StatsHandler(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
+	ctx.SetContentType("application/json")
 	ctx.SetBody(data)
 }
 
@@ -30,5 +31,6 @@ func (p *Provider) ItemStatsHandler(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
+	ctx.SetContentType("application/json")
 	ctx.SetBody(data)
 }

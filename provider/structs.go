@@ -14,6 +14,8 @@ const (
 type (
 	item struct {
 		ID             string  `json:"id"`
+		Title          string  `json:"title"`
+		VideoDuration  string  `json:"video_duration"`
 		VideoURL       string  `json:"video_url"`
 		DestinationUrl string  `json:"destination_url"`
 		Bid            float64 `json:"bid"`

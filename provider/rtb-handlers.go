@@ -37,14 +37,18 @@ func (p *Provider) BidRequestHandler(ctx *fasthttp.RequestCtx) {
 			{
 				Bid: []openrtb2.Bid{
 					{
-						ID: uuid.NewString(),
+						ID:    uuid.NewString(),
 						ImpID: bidRequest.Imp[0].ID,
 						AdID:  item.ID,
 						Price: item.Bid,
 						CID:   item.ID,
 						CrID:  item.ID,
 						NURL:  p.baseURL + "/rtb/notify/" + item.ID,
-						AdM:   p.baseURL + "/rtb/vast/" + item.ID,
+						AdM: p.baseURL +
+							"/rtb/vast/" +
+							item.ID +
+							"?source_id=" +
+							bidRequest.Site.ID,
 					},
 				},
 			},
@@ -57,6 +61,7 @@ func (p *Provider) BidRequestHandler(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
+	ctx.SetContentType("application/json")
 	ctx.SetBody(data)
 }
 
@@ -78,9 +83,16 @@ func (p *Provider) VASTHandler(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
+	sourceID := ctx.QueryArgs().Peek("source_id")
+
+	destURL := strings.Replace(item.DestinationUrl, "{{ad_id}}", item.ID, -1)
+	destURL = strings.Replace(destURL, "{{source_id}}", string(sourceID), -1)
+
 	data := strings.Replace(vastTemplate, "{{ad_id}}", item.ID, -1)
 	data = strings.Replace(data, "{{video_url}}", item.VideoURL, -1)
-	data = strings.Replace(data, "{{destination_url}}", item.DestinationUrl, -1)
+	data = strings.Replace(data, "{{title}}", item.Title, -1)
+	data = strings.Replace(data, "{{video_duration}}", item.VideoDuration, -1)
+	data = strings.Replace(data, "{{destination_url}}", destURL, -1)
 	data = strings.Replace(data, "{{base_url}}", p.baseURL, -1)
 
 	ctx.SetContentType("text/xml")

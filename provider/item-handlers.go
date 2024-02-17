@@ -14,6 +14,7 @@ func (p *Provider) GetItemsHandler(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
+	ctx.SetContentType("application/json")
 	ctx.SetBody(data)
 }
 
@@ -31,6 +32,7 @@ func (p *Provider) GetItemHandler(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
+	ctx.SetContentType("application/json")
 	ctx.SetBody(data)
 }
 
@@ -46,6 +48,9 @@ func (p *Provider) UpsertItemHandler(ctx *fasthttp.RequestCtx) {
 	if item.ID == "" {
 		item.ID = uuid.NewString()
 	}
+
+	p.items.mu.Lock()
+	defer p.items.mu.Unlock()
 
 	p.items.data[item.ID] = item
 }
